@@ -37,6 +37,8 @@ require_once($CFG->dirroot . '/blocks/edit_form.php');
 class block_glossarysearch_edit_form extends block_edit_form {
     /**
      * Adds per-instance settings shown when configuring this block.
+     *
+     * @param MoodleQuickForm $mform The form object to add elements to
      */
     protected function specific_definition($mform) {
         global $DB, $COURSE;
