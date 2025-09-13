@@ -1,9 +1,32 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Version information for block_glossarysearch
+ *
+ * @package    block_glossarysearch
+ * @copyright  2025 Alan Chadwick (original author, released in Moodle forum)
+ * @copyright  2025 Sadik Mert (rewrite & further development)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
-// Basic plugin metadata for the Glossary search block.
-$plugin->component = 'block_glossarysearch'; // Full frankenstyle name.
-$plugin->version   = 2025082800;             // YYYYMMDDXX build stamp.
-$plugin->requires  = 2024042200;             // Requires Moodle 4.5 (2024042200).
-$plugin->maturity  = MATURITY_BETA;         // Development stage: ALPHA, BETA, RC, or STABLE.
-$plugin->release   = '0.4.0';                // Human-friendly version.
+$plugin->component = 'block_glossarysearch';
+$plugin->version   = 2025082800;
+$plugin->requires  = 2024042200;
+$plugin->maturity  = MATURITY_BETA;
+$plugin->release   = '0.4.0';

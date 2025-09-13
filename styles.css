@@ -1,5 +1,138 @@
-/* Glossary search block styles */
+/* Modern card container for the block */
+.block_glossarysearch .glossarysearch-outercard {
+    background: #fff;
+    border-radius: 1.1rem;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.07), 0 1.5px 4px 0 rgba(0, 0, 0, 0.04);
+    padding: 0.3rem;
+    margin-bottom: 1.2rem;
+    border: 1px solid #e3e6ea;
+}
 
+/* Form card look */
+.block_glossarysearch .glossarysearch-formcard {
+    background: #f7fafd;
+    border-radius: 0.7rem;
+    padding: 1rem 1.1rem 0.7rem 1.1rem;
+    margin-bottom: 1.1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03);
+    border: 1px solid #e3e6ea;
+}
+
+/* Modern input look */
+.block_glossarysearch .glossarysearch-form input[type="text"],
+.block_glossarysearch .glossarysearch-input input[type="text"] {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    border-radius: 0.5rem;
+    border: 1px solid #cfd8dc;
+    padding: 0.5rem 0.7rem;
+    font-size: 1rem;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+.block_glossarysearch .glossarysearch-form input[type="text"]:focus {
+    border-color: #1976d2;
+    outline: none;
+}
+
+/* Modern select look */
+.block_glossarysearch .glossarysearch-select select {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid #cfd8dc;
+    padding: 0.5rem 0.7rem;
+    font-size: 1rem;
+    background: #f7fafd;
+}
+
+/* Modern submit button */
+.block_glossarysearch .glossarysearch-submit input[type="submit"] {
+    width: 100%;
+    border-radius: 0.5rem;
+    background: linear-gradient(90deg, #1976d2 0%, #2196f3 100%);
+    color: #fff;
+    border: none;
+    padding: 0.55rem 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 2px 0 rgba(25, 118, 210, 0.08);
+    transition: background 0.2s;
+}
+
+.block_glossarysearch .glossarysearch-submit input[type="submit"]:hover {
+    background: linear-gradient(90deg, #1565c0 0%, #1976d2 100%);
+}
+
+/* Results modern look */
+.block_glossarysearch .glossarysearch-results {
+    background: #f9fafb;
+    border-radius: 0.7rem;
+    margin-bottom: 0.7rem;
+    border: 1px solid #e3e6ea;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.block_glossarysearch .glossarysearch-results ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.block_glossarysearch .glossarysearch-results li {
+    margin-bottom: 0.6rem;
+    padding: 0.3rem;
+    border-bottom: 1px solid #e3e6ea;
+}
+
+.block_glossarysearch .glossarysearch-results li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.block_glossarysearch .glossarysearch-def {
+    font-size: 1.01em;
+    line-height: 1.5;
+    margin-top: 0.2rem;
+}
+
+.block_glossarysearch .glossarysearch-meta {
+    font-size: 0.87em;
+    color: var(--text-color-muted, #7b8a99);
+    margin-top: 0.25rem;
+}
+
+/* Paging modern look */
+.block_glossarysearch .glossarysearch-paging {
+    margin-top: 0.7rem;
+    text-align: center;
+}
+
+/* Help text modern look */
+.block_glossarysearch .glossarysearch-help {
+    background: #fffbe7;
+    border-radius: 0.5rem;
+    padding: 0.7rem 1rem;
+    color: #7b6c1d;
+    border: 1px solid #ffe082;
+    margin-top: 0.7rem;
+    font-size: 1.01em;
+}
+
+/* Highlighted search term */
+.block_glossarysearch mark {
+    padding: 0 0.18em;
+    background-color: #ffe082;
+    border-radius: 0.2em;
+    color: #222;
+}
+
+/* Glossary search block styles */
 .block_glossarysearch .glossarysearch-form {
     margin-bottom: 0.5rem;
 }
@@ -23,10 +156,6 @@
     list-style: none;
     padding-left: 0;
     margin: 0; /* reset default ul margin */
-}
-
-.block_glossarysearch .glossarysearch-results li {
-    margin: 0.5rem 0;
 }
 
 .block_glossarysearch .glossarysearch-def {

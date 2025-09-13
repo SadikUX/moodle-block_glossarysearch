@@ -1,0 +1,55 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+  @template block_glossarysearch/content
+
+  Glossary search block main content template.
+
+  Context variables:
+  - formhtml: HTML for the search form
+  - results: HTML for the results list (ul/li or empty)
+  - paging: HTML for the paging bar (optional)
+  - help: Help text (optional, shown if no query)
+
+  Example context (json):
+  {
+    "formhtml": "<form>...</form>",
+    "results": "<ul><li>...</li></ul>",
+    "paging": "<nav>...</nav>",
+    "help": "Type a word or phrase and press Search."
+  }
+}}
+<div class="glossarysearch-outercard">
+    <div class="glossarysearch-formcard">
+        {{{formhtml}}}
+    </div>
+    {{#results}}
+    <div class="glossarysearch-results glossarysearch-results--fullwidth">
+        {{{results}}}
+    </div>
+    {{/results}}
+    {{#paging}}
+    <div class="glossarysearch-paging">
+        {{{paging}}}
+    </div>
+    {{/paging}}
+    {{#help}}
+    <div class="glossarysearch-help">
+        {{help}}
+    </div>
+    {{/help}}
+</div>

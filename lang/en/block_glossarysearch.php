@@ -1,36 +1,46 @@
 <?php
-// Language strings for the Glossary search block.
-// File: blocks/glossarysearch/lang/en/block_glossarysearch.php
+// This file is part of Moodle - http://moodle.org/
 //
-// Notes:
-// - Keep this file UTF-8 without BOM.
-// - Capability names must match those declared in db/access.php.
-// - Strings are referenced throughout the block (UI labels, help, etc.).
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// Plugin name (shown in block chooser and headings).
-$string['pluginname'] = 'Glossary search';
+/**
+ * Language strings for the Glossary search block
+ *
+ * @package    block_glossarysearch
+ * @copyright  2025 Alan Chadwick (original author, released in Moodle forum)
+ * @copyright  2025 Sadik Mert (rewrite & further development)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
-// Capabilities (shown on the permissions UI).
-$string['glossarysearch:addinstance']   = 'Add a new Glossary search block';
-$string['glossarysearch:myaddinstance'] = 'Add a new Glossary search block to the Dashboard';
+$string['allcourseglossaries'] = 'All course glossaries';
 
-// UI labels for the inline search form and results.
-$string['search']             = 'Search';
-$string['searchplaceholder']  = 'Search glossary…';
-$string['allcourseglossaries']= 'All course glossaries';
-$string['enterquery']         = 'Type a word or phrase and press Search.';
-$string['noresults']          = 'No entries matched your search.';
-
-// Settings shown on the block instance configuration form (edit_form.php).
-$string['configtitle']    = 'Custom block title';
-
-// Clearer wording (keeps behaviour the same).
 $string['configglossary'] = 'Limit to a specific glossary';
-
-// Help text for the glossary selector (appears in a help popup).
 $string['configglossary_help'] =
     'Choose a single glossary in this course to search. '
   . 'Leave it set to “All course glossaries” to search every glossary in the course.';
+$string['configtitle'] = 'Custom block title';
 
-// NEW: label for the “Whole word only” checkbox added to the block UI.
+$string['enterquery'] = 'Type a word or phrase and press Search.';
+
+$string['glossarysearch:addinstance'] = 'Add a new Glossary search block';
+$string['glossarysearch:myaddinstance'] = 'Add a new Glossary search block to the Dashboard';
+
+$string['noresults'] = 'No entries matched your search.';
+
+$string['pluginname'] = 'Glossary search';
+
+$string['search'] = 'Search';
+$string['searchplaceholder'] = 'Search glossary…';
+
 $string['wholewordonly'] = 'Whole word only';
