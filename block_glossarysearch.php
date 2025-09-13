@@ -16,7 +16,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-// Bring in our helper that builds the WHERE clause for whole-word / substring.
+// Bring in our helpers for building WHERE clauses.
 require_once(__DIR__ . '/locallib.php');
 
 class block_glossarysearch extends block_base {
@@ -155,16 +155,16 @@ class block_glossarysearch extends block_base {
         // ---------------------------
         if ($q !== '') {
 
-            // 1) Build the text WHERE fragment using our helper (LIKE vs regex).
-            list($textwhere, $textparams) = block_glossarysearch_build_where($q, (bool)$wholeword);
+            // Text WHERE (concept/definition) and alias WHERE (keywords).
+            list($textwhere,  $textparams)  = block_glossarysearch_build_where($q, (bool)$wholeword);
+            list($aliaswhere, $aliasparams) = block_glossarysearch_build_where_alias($q, (bool)$wholeword);
 
-            // 2) Add our other filters (approved, course scope or specific glossary).
+            // Combine (match either text or alias).
             $wheres = [];
             $params = [];
 
-            // Text match (already parenthesised by helper).
-            $wheres[] = '(' . $textwhere . ')';
-            $params   = $params + $textparams;
+            $wheres[] = '((' . $textwhere . ') OR (' . $aliaswhere . '))';
+            $params   = $params + $textparams + $aliasparams;
 
             // Only approved entries.
             $wheres[] = 'ge.approved = :approved';
@@ -189,17 +189,19 @@ class block_glossarysearch extends block_base {
 
             $where = 'WHERE ' . implode(' AND ', $wheres);
 
-            // Count total for paging.
-            $countsql = "SELECT COUNT(1)
+            // Count total for paging (DISTINCT to avoid duplicates when multiple aliases match).
+            $countsql = "SELECT COUNT(DISTINCT ge.id)
                            FROM {glossary_entries} ge
                            JOIN {glossary} g ON g.id = ge.glossaryid
+                      LEFT JOIN {glossary_alias} ga ON ga.entryid = ge.id
                          $where";
             $total = $DB->count_records_sql($countsql, $params);
 
-            // Fetch page of results.
-            $sql = "SELECT ge.id, ge.concept, ge.definition, ge.glossaryid, g.name AS glossaryname
+            // Fetch page of results (DISTINCT to avoid dupes).
+            $sql = "SELECT DISTINCT ge.id, ge.concept, ge.definition, ge.glossaryid, g.name AS glossaryname
                       FROM {glossary_entries} ge
                       JOIN {glossary} g ON g.id = ge.glossaryid
+                 LEFT JOIN {glossary_alias} ga ON ga.entryid = ge.id
                     $where
                   ORDER BY ge.concept ASC";
 

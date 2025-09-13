@@ -6,7 +6,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Build a WHERE fragment and params for glossary search.
+ * Build a WHERE fragment and params for concept/definition matching.
  *
  * @param string $q          The raw search text (already trimmed).
  * @param bool   $wholeword  True = enforce whole-word match.
@@ -72,6 +72,66 @@ function block_glossarysearch_build_where(string $q, bool $wholeword): array {
         'w6' => $q . ' %',
         'w7' => '% ' . $q,
         'w8' => ' ' . $q . ' ',
+    ];
+
+    return [$where, $params];
+}
+
+/**
+ * Build a WHERE fragment and params for alias/keyword matching (ga.alias).
+ *
+ * @param string $q
+ * @param bool   $wholeword
+ * @return array [$where, $params]
+ */
+function block_glossarysearch_build_where_alias(string $q, bool $wholeword): array {
+    global $DB, $CFG;
+
+    $q = trim($q);
+    if ($q === '') {
+        return ['1=1', []]; // no filtering
+    }
+
+    $quoted = preg_quote($q, '/');
+
+    // ---------- Default substring search (portable LIKE on alias) ----------
+    $like       = $DB->sql_like('ga.alias', ':qa', false);
+    $likewhere  = "($like)";
+    $likeparams = ['qa' => "%$q%"];
+
+    if (!$wholeword) {
+        return [$likewhere, $likeparams];
+    }
+
+    // ---------- WHOLE WORD MODE ----------
+    $dbtype = $CFG->dbtype ?? '';
+
+    // MySQL/MariaDB: POSIX word boundaries
+    if (strpos($dbtype, 'mysqli') !== false || strpos($dbtype, 'mariadb') !== false) {
+        $re = '[[:<:]]' . $quoted . '[[:>:]]';
+        return ["(ga.alias REGEXP :rea)", ['rea' => $re]];
+    }
+
+    // PostgreSQL: case-insensitive regex with \y boundaries
+    if (strpos($dbtype, 'pgsql') !== false) {
+        $re = "\\y" . $quoted . "\\y";
+        return ["(ga.alias ~* :rea)", ['rea' => $re]];
+    }
+
+    // Fallback: approximate with space-padded LIKE.
+    $aliascmp = $DB->sql_compare_text($DB->sql_concat("' '", 'ga.alias', "' '"));
+    $where = "(
+        $aliascmp LIKE :w9 OR
+        $aliascmp LIKE :w10 OR
+        $aliascmp LIKE :w11 OR
+        $aliascmp LIKE :w12
+    )";
+
+    $params = [
+        'w9'  => '% ' . $q . ' %',
+        'w10' => $q . ' %',
+        'w11' => '% ' . $q,
+        'w12' => ' ' . $q . ' ',
     ];
 
     return [$where, $params];
