@@ -1,0 +1,50 @@
+/* Glossary search block styles */
+
+.block_glossarysearch .glossarysearch-form {
+    margin-bottom: 0.5rem;
+}
+
+/* Stack each control on its own line */
+.block_glossarysearch .glossarysearch-input,
+.block_glossarysearch .glossarysearch-select,
+.block_glossarysearch .glossarysearch-checkbox,
+.block_glossarysearch .glossarysearch-submit {
+    margin-top: 0.3rem;
+}
+
+/* Nice alignment for checkbox + label */
+.block_glossarysearch .glossarysearch-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.block_glossarysearch .glossarysearch-results {
+    list-style: none;
+    padding-left: 0;
+    margin: 0; /* reset default ul margin */
+}
+
+.block_glossarysearch .glossarysearch-results li {
+    margin: 0.5rem 0;
+}
+
+.block_glossarysearch .glossarysearch-def {
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.block_glossarysearch .glossarysearch-meta {
+    font-size: 0.8em;
+    color: var(--text-color-muted, #666);
+    margin-top: 0.2rem;
+}
+
+.block_glossarysearch .glossarysearch-paging {
+    margin-top: 0.5rem;
+}
+
+.block_glossarysearch mark {
+    padding: 0 0.15em;
+    background-color: #ffeb3b; /* fallback if theme doesn’t style <mark> */
+}

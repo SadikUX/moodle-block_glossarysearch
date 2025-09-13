@@ -1,0 +1,18 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/project files
+.idea/
+.vscode/
+*.swp
+
+# Node and Composer dependencies (not used here, but safe to exclude)
+node_modules/
+vendor/
+
+# Moodle data folder (never commit this)
+moodledata/
+
+# Logs
+*.log
