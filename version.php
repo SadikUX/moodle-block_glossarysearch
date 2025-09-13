@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_glossarysearch';
-$plugin->version   = 2025091302;
+$plugin->version   = 2025091303;
 $plugin->requires  = 2024042200;
 $plugin->maturity  = MATURITY_BETA;
 $plugin->release   = '1.0.0';
