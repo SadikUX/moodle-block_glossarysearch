@@ -49,6 +49,7 @@ $string['perpage_heading'] = 'Pagination settings';
 $string['pluginname'] = 'Glossary search';
 $string['primarycolor'] = 'Primary color';
 $string['primarycolor_desc'] = 'Select the primary color for the glossary search block.';
+$string['privacy:metadata'] = 'The Glossary search block does not store any personal data.';
 
 $string['search'] = 'Search';
 $string['searchplaceholder'] = 'Search glossary…';
