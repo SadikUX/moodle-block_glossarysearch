@@ -1,22 +1,25 @@
 # Glossary Search Block (block_glossarysearch)
 
-A lightweight Moodle block that lets users search glossary entries directly from a block region.  
-Results are displayed **inside the block** with keyword highlighting and paging.
+A modern, lightweight Moodle block for searching glossary entries directly from a block region.  
+Results are displayed **inside the block** with keyword highlighting, paging, and a responsive card layout.
 
 ---
 
 ## Features
+- Modern card design with Mustache templating
+- Search form and results inside the block, full width, mobile-friendly
 - Search by keyword across **concepts** and **definitions**
 - Works across all glossaries in a course, or restrict to one glossary in settings
-- Results shown directly in the block (no page navigation)
 - Match highlighting with `<mark>`
-- Paging (default 10 results per page)
+- Paging (10 results per page)
 - Per-instance custom title
+- No custom database tables required, no install.xml needed
+- Portable: search uses only SQL `LIKE` (no regex/DB-specific quirks)
 
 ---
 
 ## Requirements
-- Moodle **4.5** (tested only on 4.5)
+- Moodle **4.5** (tested on 4.5)
 - PHP 8.1 / 8.2
 - Tested with the **Adaptable theme**
 
@@ -24,33 +27,31 @@ Results are displayed **inside the block** with keyword highlighting and paging.
 
 ## Installation
 1. Copy the folder to:
-blocks/glossarysearch/
-
+	`blocks/glossarysearch/`
 2. Log in as admin → **Site administration → Notifications** to complete installation.
-3. In a course, **Turn editing on** → **Add a block** → *Glossary search*.
+3. In a course: **Turn editing on** → **Add a block** → *Glossary search*.
 4. (Optional) Configure the block: set a custom title or restrict to one glossary.
 
 ---
 
 ## Usage
-- Type a search term in the block’s input box and press **Search**.
-- Results show as a list (concept, definition, glossary name).
+- Type a search term in the input box and press **Search**.
+- Results appear as a list (concept, definition, glossary name).
 - Matches are highlighted; a paging bar appears if there are more than 10 results.
 
 ---
 
 ## Capabilities
-- `block/glossarysearch:addinstance` — add to course pages (default: teachers & managers).
-- `block/glossarysearch:myaddinstance` — add to Dashboard (default: all users).
+- `block/glossarysearch:addinstance` — add to course pages (default: teachers & managers)
+- `block/glossarysearch:myaddinstance` — add to Dashboard (default: all users)
 
 ---
 
 ## Notes
-- Only searches **approved** glossary entries.
-- On the Dashboard/front page, the block has no course context. You must either:
-- Configure it to use a specific glossary, or
-- Add it inside a course.
-- Matching uses SQL `LIKE`. For very large glossaries, consider Moodle **Global Search (Solr)**.
+- Only **approved** glossary entries are searched.
+- On the Dashboard/front page, the block must be configured to use a specific glossary or be placed inside a course.
+- The search is portable for all databases (LIKE only, no regex).
+- For very large glossaries, consider Moodle **Global Search (Solr)**.
 
 ---
 
@@ -61,14 +62,22 @@ blocks/glossarysearch/
 ---
 
 ## Privacy
-This block stores no personal data. It only displays glossary entries the user already has permission to view.
+This plugin stores no personal data. It only displays glossary entries the user already has permission to view.
 
 ---
 
-## Disclaimer
-I am **not a developer or Moodle expert**. This block was created for personal use and shared in case it helps others.  
-If anyone with more expertise would like to take over maintenance, improve the code, or extend the functionality, please feel free to do so.  
-I cannot promise support or fixes for issues.
+## Changelog (Key Changes)
+- Complete redesign: modern card layout, responsive, Mustache template
+- Results list is full width, improved spacing and readability
+- Only portable LIKE search, no regex/DB-specific quirks
+- Modernized CSS and UX, linter issues fixed
+- Code cleaned up and documented
+
+---
+
+## Maintainer
+Currently maintained by **Sadik Mert** (Fork & Rewrite, 2025)
+Original version: Alan Chadwick (Moodle Forum, 2025)
 
 ---
 

@@ -38,9 +38,6 @@ function block_glossarysearch_build_where(string $q, bool $wholeword): array {
         return ['1=1', []];
     }
 
-    // Escape regex metacharacters safely (for DB regex branches).
-    $quoted = preg_quote($q, '/');
-
     // Default substring search (portable LIKE on concept/definition)
     // Use distinct param names for each placeholder.
     $like1      = $DB->sql_like('ge.concept', ':q1', false);
@@ -51,9 +48,6 @@ function block_glossarysearch_build_where(string $q, bool $wholeword): array {
     if (!$wholeword) {
         return [$likewhere, $likeparams];
     }
-
-    // WHOLE WORD MODE.
-    $dbtype = $CFG->dbtype ?? '';
 
     // Einheitlicher, portabler LIKE-Fallback für alle DBs (simuliert Wortgrenzen).
     $lhs = $DB->sql_compare_text($DB->sql_concat("' '", 'ge.concept', "' '"));

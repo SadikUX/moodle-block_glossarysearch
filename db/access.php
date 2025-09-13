@@ -19,7 +19,8 @@
  *
  * @package    block_glossarysearch
  * @category   access
- * @copyright  2025 Sadik Mert
+ * @copyright  2025 Alan Chadwick (original author, released in Moodle forum)
+ * @copyright  2025 Sadik Mert (rewrite & further development)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

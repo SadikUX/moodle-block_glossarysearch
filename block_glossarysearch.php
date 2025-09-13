@@ -72,8 +72,7 @@ class block_glossarysearch extends block_base {
      * @return bool
      */
     public function has_config() {
-        // No site-level admin settings (we use per-instance config via edit_form.php).
-        return false;
+        return true;
     }
 
     /**
@@ -87,35 +86,15 @@ class block_glossarysearch extends block_base {
     }
 
     /**
-     * Returns the content of the block.
+     * Get available glossaries based on course context and configuration.
      *
-     * This method generates the HTML content displayed within the block.
-     * If the content has already been generated, the cached version is returned.
-     *
-     * @return stdClass The block content object.
+     * @param int $courseid Course ID
+     * @param int $glossaryid Configured glossary ID from block settings
+     * @return array Array of glossary records
      */
-    public function get_content() {
-        global $OUTPUT, $DB, $COURSE;
+    private function get_available_glossaries($courseid, $glossaryid) {
+        global $DB;
 
-        if ($this->content !== null) {
-            return $this->content;
-        }
-
-        $this->content = new stdClass();
-        $this->content->text = '';
-        $this->content->footer = '';
-
-        // Read request parameters (namespaced with gs_ to avoid collisions).
-        $q         = optional_param('gs_q', '', PARAM_RAW_TRIMMED);
-        $page      = optional_param('gs_page', 0, PARAM_INT);
-        $wholeword = optional_param('gs_wholeword', 0, PARAM_BOOL);
-        $perpage   = 10;
-
-        // Scope: glossary selection (from block config dropdown) and course.
-        $glossaryid = !empty($this->config->glossaryid) ? (int)$this->config->glossaryid : 0;
-        $courseid   = isset($COURSE->id) ? (int)$COURSE->id : SITEID;
-
-        // Build glossary dropdown (when on a course) to narrow search.
         $glossaries = [];
         if ($courseid && $courseid != SITEID) {
             $glossaries = $DB->get_records('glossary', ['course' => $courseid], 'name');
@@ -124,14 +103,24 @@ class block_glossarysearch extends block_base {
                 $glossaries = $DB->get_records('glossary', ['id' => $glossaryid]);
             }
         }
+        return $glossaries;
+    }
 
+    /**
+     * Build the search form HTML.
+     *
+     * @param array $glossaries Available glossaries
+     * @param string $q Current search query
+     * @param int $currentgid Current glossary ID
+     * @param bool $wholeword Whole word search flag
+     * @return string Form HTML
+     */
+    private function build_search_form($glossaries, $q, $currentgid, $wholeword) {
         $selectoptions = [0 => get_string('allcourseglossaries', 'block_glossarysearch')];
         foreach ($glossaries as $g) {
             $selectoptions[(int)$g->id] = format_string($g->name);
         }
-        $currentgid = $glossaryid ? $glossaryid : optional_param('gs_gid', 0, PARAM_INT);
 
-        // Render the small search form inside the block (stacked layout).
         $formurl = new moodle_url($this->page->url, ['blockid' => $this->instance->id]);
         $formhtml = html_writer::start_tag('form', ['method' => 'get', 'action' => $formurl->out(false)]);
         foreach ($this->page->url->params() as $k => $v) {
@@ -173,72 +162,157 @@ class block_glossarysearch extends block_base {
         );
         $formhtml .= html_writer::end_tag('form');
 
-        // Prepare template context for results (if any).
-        $templatecontext = [
-            'formhtml' => $formhtml,
-        ];
+        return $formhtml;
+    }
 
-        if ($q !== '') {
-            [$textwhere, $textparams] = block_glossarysearch_build_where($q, (bool)$wholeword);
-            $wheres = [];
-            $params = [];
-            $wheres[] = '(' . $textwhere . ')';
-            $params   = $params + $textparams;
-            $wheres[] = 'ge.approved = :approved';
-            $params['approved'] = 1;
-            if (!empty($currentgid)) {
-                $wheres[] = 'ge.glossaryid = :gid';
-                $params['gid'] = $currentgid;
-            } else if ($courseid && $courseid != SITEID) {
-                $wheres[] = 'g.course = :courseid';
-                $params['courseid'] = $courseid;
-            } else if (!empty($glossaryid)) {
-                $wheres[] = 'ge.glossaryid = :gid2';
-                $params['gid2'] = $glossaryid;
-            }
-            $where = 'WHERE ' . implode(' AND ', $wheres);
-            $countsql = "SELECT COUNT(1)
-                           FROM {glossary_entries} ge
-                           JOIN {glossary} g ON g.id = ge.glossaryid
-                         $where";
-            $total = $DB->count_records_sql($countsql, $params);
-            $sql = "SELECT ge.id, ge.concept, ge.definition, ge.glossaryid, g.name AS glossaryname
-                      FROM {glossary_entries} ge
-                      JOIN {glossary} g ON g.id = ge.glossaryid
-                    $where
-                  ORDER BY ge.concept ASC";
-            $entries = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
-            if ($entries) {
-                $list = html_writer::start_tag('ul', ['class' => 'glossarysearch-results']);
-                foreach ($entries as $e) {
-                    $concept = format_string($e->concept);
-                    $def     = format_text($e->definition, FORMAT_HTML, ['filter' => true]);
-                    if ($wholeword) {
-                        $pattern = '/(?<![A-Za-z0-9_])(' . preg_quote($q, '/') . ')(?![A-Za-z0-9_])/i';
-                    } else {
-                        $pattern = '/(' . preg_quote($q, '/') . ')/i';
-                    }
-                    $concept = preg_replace($pattern, '<mark>$1</mark>', $concept);
-                    $def     = preg_replace($pattern, '<mark>$1</mark>', $def);
-                    $item  = html_writer::tag('strong', $concept);
-                    $item .= html_writer::tag('div', $def, ['class' => 'glossarysearch-def']);
-                    $item .= html_writer::tag('div', s($e->glossaryname), ['class' => 'glossarysearch-meta']);
-                    $list .= html_writer::tag('li', $item);
+    /**
+     * Get configuration colors from settings with fallbacks.
+     *
+     * @return array Array with color configuration
+     */
+    private function get_color_configuration() {
+        return [
+            'primarycolor' => get_config('block_glossarysearch', 'primarycolor') ?: '#0073e6',
+            'secondarycolor' => get_config('block_glossarysearch', 'secondarycolor') ?: '#005bb5',
+            'highlightbg' => get_config('block_glossarysearch', 'highlightbg') ?: '#ffe082',
+            'highlightcolor' => get_config('block_glossarysearch', 'highlightcolor') ?: '#222',
+        ];
+    }
+
+    /**
+     * Search for glossary entries and return results HTML.
+     *
+     * @param string $q Search query
+     * @param bool $wholeword Whole word search
+     * @param int $currentgid Current glossary ID
+     * @param int $courseid Course ID
+     * @param int $glossaryid Configured glossary ID
+     * @param int $page Current page
+     * @param int $perpage Results per page
+     * @return array Array with 'results' and 'paging' HTML
+     */
+    private function search_glossary_entries($q, $wholeword, $currentgid, $courseid, $glossaryid, $page, $perpage) {
+        global $DB, $OUTPUT;
+
+        [$textwhere, $textparams] = block_glossarysearch_build_where($q, (bool)$wholeword);
+        $wheres = [];
+        $params = [];
+        $wheres[] = '(' . $textwhere . ')';
+        $params   = $params + $textparams;
+        $wheres[] = 'ge.approved = :approved';
+        $params['approved'] = 1;
+
+        if (!empty($currentgid)) {
+            $wheres[] = 'ge.glossaryid = :gid';
+            $params['gid'] = $currentgid;
+        } else if ($courseid && $courseid != SITEID) {
+            $wheres[] = 'g.course = :courseid';
+            $params['courseid'] = $courseid;
+        } else if (!empty($glossaryid)) {
+            $wheres[] = 'ge.glossaryid = :gid2';
+            $params['gid2'] = $glossaryid;
+        }
+
+        $where = 'WHERE ' . implode(' AND ', $wheres);
+        $countsql = "SELECT COUNT(1)
+                       FROM {glossary_entries} ge
+                       JOIN {glossary} g ON g.id = ge.glossaryid
+                     $where";
+        $total = $DB->count_records_sql($countsql, $params);
+        $sql = "SELECT ge.id, ge.concept, ge.definition, ge.glossaryid, g.name AS glossaryname
+                  FROM {glossary_entries} ge
+                  JOIN {glossary} g ON g.id = ge.glossaryid
+                $where
+              ORDER BY ge.concept ASC";
+        $entries = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
+
+        if ($entries) {
+            $list = html_writer::start_tag('ul', ['class' => 'glossarysearch-results']);
+            foreach ($entries as $e) {
+                $concept = format_string($e->concept);
+                $def     = format_text($e->definition, FORMAT_HTML, ['filter' => true]);
+                if ($wholeword) {
+                    $pattern = '/(?<![A-Za-z0-9_])(' . preg_quote($q, '/') . ')(?![A-Za-z0-9_])/i';
+                } else {
+                    $pattern = '/(' . preg_quote($q, '/') . ')/i';
                 }
-                $list .= html_writer::end_tag('ul');
-                $templatecontext['results'] = $list;
-                $base = new moodle_url($this->page->url, [
-                    'gs_q'         => $q,
-                    'gs_gid'       => $currentgid,
-                    'gs_wholeword' => (int)$wholeword,
-                ]);
-                $paging = $OUTPUT->paging_bar($total, $page, $perpage, $base);
-                $templatecontext['paging'] = $paging;
-            } else {
-                $templatecontext['results'] = html_writer::div(
+                $concept = preg_replace($pattern, '<mark>$1</mark>', $concept);
+                $def     = preg_replace($pattern, '<mark>$1</mark>', $def);
+                $item  = html_writer::tag('strong', $concept);
+                $item .= html_writer::tag('div', $def, ['class' => 'glossarysearch-def']);
+                $item .= html_writer::tag('div', s($e->glossaryname), ['class' => 'glossarysearch-meta']);
+                $list .= html_writer::tag('li', $item);
+            }
+            $list .= html_writer::end_tag('ul');
+
+            $base = new moodle_url($this->page->url, [
+                'gs_q'         => $q,
+                'gs_gid'       => $currentgid,
+                'gs_wholeword' => (int)$wholeword,
+            ]);
+            $base->remove_params('page');
+            $base->param('gs_page', $page);
+            $paging = $OUTPUT->paging_bar($total, $page, $perpage, $base, 'gs_page');
+
+            return ['results' => $list, 'paging' => $paging];
+        } else {
+            return [
+                'results' => html_writer::div(
                     get_string('noresults', 'block_glossarysearch'),
                     'glossarysearch-empty'
-                );
+                ),
+                'paging' => null,
+            ];
+        }
+    }
+
+    /**
+     * Returns the content of the block.
+     *
+     * This method generates the HTML content displayed within the block.
+     * If the content has already been generated, the cached version is returned.
+     *
+     * @return stdClass The block content object.
+     */
+    public function get_content() {
+        global $OUTPUT, $COURSE;
+
+        if ($this->content !== null) {
+            return $this->content;
+        }
+
+        $this->content = new stdClass();
+        $this->content->text = '';
+        $this->content->footer = '';
+
+        // Read request parameters (namespaced with gs_ to avoid collisions).
+        $q         = optional_param('gs_q', '', PARAM_RAW_TRIMMED);
+        $page      = optional_param('gs_page', 0, PARAM_INT);
+        $wholeword = optional_param('gs_wholeword', 0, PARAM_BOOL);
+        $perpage   = (int)(get_config('block_glossarysearch', 'perpage') ?: 10);
+
+        // Scope: glossary selection (from block config dropdown) and course.
+        $glossaryid = !empty($this->config->glossaryid) ? (int)$this->config->glossaryid : 0;
+        $courseid   = isset($COURSE->id) ? (int)$COURSE->id : SITEID;
+        $currentgid = $glossaryid ? $glossaryid : optional_param('gs_gid', 0, PARAM_INT);
+
+        // Get available glossaries and build form.
+        $glossaries = $this->get_available_glossaries($courseid, $glossaryid);
+        $formhtml = $this->build_search_form($glossaries, $q, $currentgid, $wholeword);
+
+        // Get colors from settings.
+        $colors = $this->get_color_configuration();
+
+        // Prepare template context.
+        $templatecontext = array_merge([
+            'formhtml' => $formhtml,
+        ], $colors);
+
+        if ($q !== '') {
+            $searchresults = $this->search_glossary_entries($q, $wholeword, $currentgid, $courseid, $glossaryid, $page, $perpage);
+            $templatecontext['results'] = $searchresults['results'];
+            if ($searchresults['paging']) {
+                $templatecontext['paging'] = $searchresults['paging'];
             }
         } else {
             $templatecontext['help'] = get_string('enterquery', 'block_glossarysearch');

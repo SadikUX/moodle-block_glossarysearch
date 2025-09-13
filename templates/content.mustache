@@ -33,7 +33,11 @@
     "help": "Type a word or phrase and press Search."
   }
 }}
-<div class="glossarysearch-outercard">
+<div class="glossarysearch-outercard"
+    style="--primary-color: {{#primarycolor}}{{primarycolor}}{{/primarycolor}}{{^primarycolor}}#0073e6{{/primarycolor}};
+           --secondary-color: {{#secondarycolor}}{{secondarycolor}}{{/secondarycolor}}{{^secondarycolor}}#005bb5{{/secondarycolor}};
+           --highlight-bg: {{#highlightbg}}{{highlightbg}}{{/highlightbg}}{{^highlightbg}}#ffe082{{/highlightbg}};
+           --highlight-color: {{#highlightcolor}}{{highlightcolor}}{{/highlightcolor}}{{^highlightcolor}}#222{{/highlightcolor}};">
     <div class="glossarysearch-formcard">
         {{{formhtml}}}
     </div>

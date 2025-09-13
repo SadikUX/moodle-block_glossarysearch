@@ -18,6 +18,11 @@
     border: 1px solid #e3e6ea;
 }
 
+.glossarysearch-paging .pagination .pagination {
+    overflow-x: auto;
+    height: 3rem;
+}
+
 /* Modern input look */
 .block_glossarysearch .glossarysearch-form input[type="text"],
 .block_glossarysearch .glossarysearch-input input[type="text"] {
@@ -51,7 +56,7 @@
 .block_glossarysearch .glossarysearch-submit input[type="submit"] {
     width: 100%;
     border-radius: 0.5rem;
-    background: linear-gradient(90deg, #1976d2 0%, #2196f3 100%);
+    background: var(--primary-color, #1976d2);
     color: #fff;
     border: none;
     padding: 0.55rem 0;
@@ -63,7 +68,7 @@
 }
 
 .block_glossarysearch .glossarysearch-submit input[type="submit"]:hover {
-    background: linear-gradient(90deg, #1565c0 0%, #1976d2 100%);
+    background: var(--secondary-color, #005bb5);
 }
 
 /* Results modern look */
@@ -111,6 +116,10 @@
 .block_glossarysearch .glossarysearch-paging {
     margin-top: 0.7rem;
     text-align: center;
+    white-space: nowrap;
+    display: block;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Help text modern look */
@@ -127,9 +136,13 @@
 /* Highlighted search term */
 .block_glossarysearch mark {
     padding: 0 0.18em;
-    background-color: #ffe082;
+    background-color: var(--highlight-bg, #ffe082);
     border-radius: 0.2em;
-    color: #222;
+    color: var(--highlight-color, #222);
+}
+
+.glossarysearch-empty {
+    padding: 1rem;
 }
 
 /* Glossary search block styles */
@@ -158,22 +171,3 @@
     margin: 0; /* reset default ul margin */
 }
 
-.block_glossarysearch .glossarysearch-def {
-    font-size: 0.95em;
-    line-height: 1.4;
-}
-
-.block_glossarysearch .glossarysearch-meta {
-    font-size: 0.8em;
-    color: var(--text-color-muted, #666);
-    margin-top: 0.2rem;
-}
-
-.block_glossarysearch .glossarysearch-paging {
-    margin-top: 0.5rem;
-}
-
-.block_glossarysearch mark {
-    padding: 0 0.15em;
-    background-color: #ffeb3b; /* fallback if theme doesn’t style <mark> */
-}

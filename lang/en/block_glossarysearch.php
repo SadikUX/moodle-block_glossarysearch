@@ -25,6 +25,7 @@
 
 $string['allcourseglossaries'] = 'All course glossaries';
 
+$string['colors_heading'] = 'Color settings';
 $string['configglossary'] = 'Limit to a specific glossary';
 $string['configglossary_help'] =
     'Choose a single glossary in this course to search. '
@@ -36,11 +37,22 @@ $string['enterquery'] = 'Type a word or phrase and press Search.';
 $string['glossarysearch:addinstance'] = 'Add a new Glossary search block';
 $string['glossarysearch:myaddinstance'] = 'Add a new Glossary search block to the Dashboard';
 
+$string['highlightbg'] = 'Highlight background color';
+$string['highlightbg_desc'] = 'Select the highlight background color for the marked search terms.';
+$string['highlightcolor'] = 'Highlight text color';
+$string['highlightcolor_desc'] = 'Select the highlight text color for the marked search terms.';
 $string['noresults'] = 'No entries matched your search.';
 
+$string['perpage'] = 'Results per page';
+$string['perpage_desc'] = 'Number of glossary entries to show per page in the search results.';
+$string['perpage_heading'] = 'Pagination settings';
 $string['pluginname'] = 'Glossary search';
+$string['primarycolor'] = 'Primary color';
+$string['primarycolor_desc'] = 'Select the primary color for the glossary search block.';
 
 $string['search'] = 'Search';
 $string['searchplaceholder'] = 'Search glossary…';
+$string['secondarycolor'] = 'Secondary color';
+$string['secondarycolor_desc'] = 'Select the secondary color for the glossary search block.';
 
 $string['wholewordonly'] = 'Whole word only';
