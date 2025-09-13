@@ -31,7 +31,7 @@
  * @return array [$where, $params]
  */
 function block_glossarysearch_build_where(string $q, bool $wholeword): array {
-    global $DB, $CFG;
+    global $DB;
 
     $q = trim($q);
     if ($q === '') {
