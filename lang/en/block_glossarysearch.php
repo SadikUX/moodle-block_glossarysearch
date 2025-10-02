@@ -27,9 +27,7 @@ $string['allcourseglossaries'] = 'All course glossaries';
 
 $string['colors_heading'] = 'Color settings';
 $string['configglossary'] = 'Limit to a specific glossary';
-$string['configglossary_help'] =
-    'Choose a single glossary in this course to search. '
-  . 'Leave it set to “All course glossaries” to search every glossary in the course.';
+$string['configglossary_help'] = 'Choose a single glossary in this course to search. Leave it set to “All course glossaries” to search every glossary in the course.';
 $string['configtitle'] = 'Custom block title';
 
 $string['enterquery'] = 'Type a word or phrase and press Search.';
